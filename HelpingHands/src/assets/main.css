@@ -1,35 +1,31 @@
-@import './base.css';
-
-#app {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  font-weight: normal;
+body {
+  font-family: 'Arial', 'Helvetica', sans-serif;
+  color: #333;
+  background-color: #f8f9fa;
 }
 
-a,
-.green {
-  text-decoration: none;
-  color: hsla(160, 100%, 37%, 1);
-  transition: 0.4s;
-  padding: 3px;
+.site-title {
+  font-family: 'Georgia', 'Times New Roman', serif; 
+  font-size: 4rem;
+  color: #0cb653;
 }
 
-@media (hover: hover) {
-  a:hover {
-    background-color: hsla(160, 100%, 37%, 0.2);
-  }
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Georgia', 'Times New Roman', serif;
+  color: var(--primary-color);
 }
 
-@media (min-width: 1024px) {
-  body {
-    display: flex;
-    place-items: center;
-  }
+a {
+  color: var(--secondary-color);
+}
 
-  #app {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    padding: 0 2rem;
-  }
+a:hover {
+  color: var(--primary-color);
+}
+
+:root {
+  --primary-color: #0cb653;
+  --secondary-color: #007bff;
+  --background-color: #f8f9fa;
+  --text-color: #333;
 }
