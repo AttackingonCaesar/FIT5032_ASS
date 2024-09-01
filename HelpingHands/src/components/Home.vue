@@ -3,13 +3,13 @@
     <header>
       <h1 class="site-title">HelpingHands</h1>
       <nav>
-        <ul>
+        <ul class="nav-list">
           <li v-if="!isLoggedIn">
-            <button @click="openLoginModal">Login</button>
+            <button class="btn btn-primary" data-toggle="modal" data-target="#loginModal">Login</button>
           </li>
           <li v-else>
             <span class="username">Welcome, {{ username }}</span>
-            <button @click="logout">Logout</button>
+            <button class="btn btn-secondary" @click="logout">Logout</button>
           </li>
         </ul>
       </nav>
@@ -17,52 +17,111 @@
 
     <section class="intro">
       <div class="links">
-        <router-link to="#" class="link-item">About Us</router-link>
-        <router-link to="#" class="link-item">Related Sites</router-link>
-        <router-link to="#" class="link-item">Contact Us</router-link>
-        <router-link to="#" class="link-item">News</router-link>
+        <a href="#" class="link-item" @click.prevent="showSection('about')">About Us</a>
+        <a href="#" class="link-item" @click.prevent="showSection('relatedSites')">Related Sites</a>
+        <a href="#" class="link-item" @click.prevent="showSection('contact')">Contact Us</a>
+        <a href="#" class="link-item" @click.prevent="showSection('news')">News</a>
       </div>
     </section>
 
     <section class="navigation">
       <h3>Select Your Category</h3>
       <div class="nav-links">
-        <button class="nav-item">Skilled Immigrants</button>
-        <button class="nav-item">Refugees</button>
-        <button class="nav-item">Other</button>
+        <button class="btn btn-outline-success nav-item" @click="selectCategory('Skilled Immigrants')">Skilled Immigrants</button>
+        <button class="btn btn-outline-success nav-item" @click="selectCategory('Refugees')">Refugees</button>
+        <button class="btn btn-outline-success nav-item" @click="selectCategory('Other')">Other</button>
       </div>
     </section>
 
-    <button class="rate-button" @click="openRatingModal">Rate Us</button>
+    <button class="btn btn-warning rate-button" data-toggle="modal" data-target="#ratingModal">Rate Us</button>
 
     <!-- Login Modal -->
-    <div v-if="showLoginModal" class="modal-overlay" @click.self="closeLoginModal">
-      <div class="modal-content">
-        <span class="close-button" @click="closeLoginModal">&times;</span>
-        <h3>Login</h3>
-        <input v-model="loginUsername" placeholder="Username" />
-        <input v-model="loginPassword" type="password" placeholder="Password" />
-        <button @click="login">Login</button>
+    <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="loginModalLabel">Login</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form @submit.prevent="login">
+              <div class="form-group">
+                <label for="loginUsername">Username</label>
+                <input type="text" id="loginUsername" v-model="loginUsername" class="form-control" :class="{ 'is-invalid': loginError }" required>
+                <div v-if="loginError" class="invalid-feedback">
+                  {{ loginError }}
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="loginPassword">Password</label>
+                <input type="password" id="loginPassword" v-model="loginPassword" class="form-control" :class="{ 'is-invalid': loginError }" required>
+              </div>
+              <button type="submit" class="btn btn-primary">Login</button>
+            </form>
+          </div>
+        </div>
       </div>
     </div>
 
     <!-- Rating Modal -->
-    <div v-if="showRatingModal" class="modal-overlay" @click.self="closeRatingModal">
-      <div class="modal-content">
-        <span class="close-button" @click="closeRatingModal">&times;</span>
-        <h3>Rate Us</h3>
-        <p>Please select a rating from 1 to 10:</p>
-        <div class="rating-container">
-          <label v-for="n in 10" :key="n">
-            <input type="radio" :value="n" v-model="rating" />
-            {{ n }}
-          </label>
+    <div class="modal fade" id="ratingModal" tabindex="-1" role="dialog" aria-labelledby="ratingModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="ratingModalLabel">Rate Us</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form @submit.prevent="submitRating">
+              <div class="form-group">
+                <label for="rating">Rate from 1 to 10</label>
+                <input type="number" id="rating" v-model="rating" min="1" max="10" class="form-control" required>
+              </div>
+              <button type="submit" class="btn btn-primary">Submit Rating</button>
+            </form>
+          </div>
         </div>
-        <button @click="submitRating">Submit</button>
       </div>
     </div>
 
-    <!-- Admin Dashboard Content -->
+    <!-- Sections -->
+    <section v-if="currentSection === 'about'" class="info-section">
+      <h2>About Us</h2>
+      <p>HelpingHands was established in 2010 to provide comprehensive support and assistance to immigrants and refugees. We understand that relocating to a new country can be challenging, especially if you are facing language barriers, cultural differences, and adjustment to life. Therefore, we have created this platform as a comprehensive resource center to help you integrate smoothly into your new environment.</p>
+      <p>Our history began with a group of dedicated volunteers who witnessed the difficulties and struggles of immigrants and refugees as they adjusted to their new lives. They were determined to take action and provide practical support to these new arrivals. Through years of growth and continuous improvement, HelpingHands has become a trusted resource center offering a variety of services including language training, legal advice, medical resources, career opportunities, and educational support.</p>
+      <p>We have a special focus on skilled immigrants, refugees, and other types of immigrants, and each of our services has been carefully designed to meet the needs of a variety of users. Our platform offers an intuitive and easy-to-use interface that ensures users can quickly find the information they need. We also provide users with a secure login system that protects their personal information and allows them to access customized services.</p>
+      <p>More than just a resource platform, HelpingHands carries our commitment to the community - to help every immigrant and refugee build a better life. Our mission is to help them overcome challenges and achieve success and happiness by providing the necessary tools and support. We believe that through solidarity and cooperation, we can together create a more inclusive and caring society.</p>
+    </section>
+
+    <section v-if="currentSection === 'relatedSites'" class="info-section">
+      <h2>Related Sites</h2>
+      <ul>
+        <li><a href="https://www.redcross.org" target="_blank">Red Cross</a></li>
+        <li><a href="https://www.unhcr.org" target="_blank">UNHCR</a></li>
+        <li><a href="https://www.immigration.gov" target="_blank">Immigration Services</a></li>
+      </ul>
+    </section>
+
+    <section v-if="currentSection === 'contact'" class="info-section">
+      <h2>Contact Us</h2>
+      <p>Address: 123 Charity Lane, Melbourne</p>
+      <p>Phone: (03) 1234 5678</p>
+      <p>Email: contact@helpinghands.org</p>
+    </section>
+
+    <section v-if="currentSection === 'news'" class="info-section">
+      <h2>News</h2>
+      <ul>
+        <li>Latest updates on immigration policies.</li>
+        <li>New language training programs available.</li>
+        <li>Community events for newcomers.</li>
+      </ul>
+    </section>
+
     <div v-if="isAdmin" class="admin-dashboard">
       <h3>Admin Dashboard</h3>
       <div class="stats">
@@ -81,6 +140,7 @@
   </div>
 </template>
 
+
 <script>
 export default {
   name: 'Home',
@@ -92,10 +152,9 @@ export default {
       loginUsername: '',
       loginPassword: '',
       rating: 1,
-      showLoginModal: false,
-      showRatingModal: false,
-      visitorsCount: Math.floor(Math.random() * 1150) + 50, // Random number between 50 and 1200
-      submissions: JSON.parse(localStorage.getItem('userRatings')) || [] // Load ratings from local storage
+      visitorsCount: Math.floor(Math.random() * 1150) + 50,
+      submissions: JSON.parse(localStorage.getItem('userRatings')) || [],
+      currentSection: ''
     };
   },
   computed: {
@@ -107,10 +166,19 @@ export default {
   },
   methods: {
     openLoginModal() {
-      this.showLoginModal = true;
+      // Ensure jQuery is available in your environment
+      if (typeof $ !== 'undefined') {
+        $('#loginModal').modal('show');
+      } else {
+        console.error('jQuery is not available');
+      }
     },
-    closeLoginModal() {
-      this.showLoginModal = false;
+    openRatingModal() {
+      if (typeof $ !== 'undefined') {
+        $('#ratingModal').modal('show');
+      } else {
+        console.error('jQuery is not available');
+      }
     },
     login() {
       if (this.loginUsername === 'admin' && this.loginPassword === 'adminpass') {
@@ -123,12 +191,13 @@ export default {
         alert('Invalid username or password');
         return;
       }
-      this.username = this.loginUsername;
+      this.username = this.escapeHTML(this.loginUsername);
       this.isLoggedIn = true;
       this.isAdmin = localStorage.getItem('role') === 'admin';
-      this.loginUsername = ''; // Clear username
-      this.loginPassword = ''; // Clear password
-      this.closeLoginModal();
+      this.loginUsername = '';
+      this.loginPassword = '';
+      // Hide the modal after successful login
+      $('#loginModal').modal('hide');
     },
     logout() {
       localStorage.removeItem('username');
@@ -136,215 +205,98 @@ export default {
       this.username = '';
       this.isLoggedIn = false;
       this.isAdmin = false;
-      this.$router.push('/login');
-    },
-    openRatingModal() {
-      this.showRatingModal = true;
-    },
-    closeRatingModal() {
-      this.showRatingModal = false;
     },
     submitRating() {
-      if (this.isLoggedIn) {
-        const userRatings = JSON.parse(localStorage.getItem('userRatings')) || [];
-        userRatings.push({ username: this.username, rating: this.rating, timestamp: new Date().toISOString() });
-        localStorage.setItem('userRatings', JSON.stringify(userRatings));
-        this.submissions = userRatings; // Update submissions
-        this.closeRatingModal();
-      } else {
-        alert('You must be logged in to submit a rating.');
+      if (this.rating < 1 || this.rating > 10) {
+        alert('Rating must be between 1 and 10');
+        return;
       }
+      const submission = {
+        username: this.username,
+        rating: this.rating,
+        timestamp: new Date().toLocaleString()
+      };
+      this.submissions.push(submission);
+      localStorage.setItem('userRatings', JSON.stringify(this.submissions));
+      this.rating = 1;
+      // Hide the modal after submission
+      $('#ratingModal').modal('hide');
+    },
+    showSection(section) {
+      this.currentSection = section;
+    },
+    selectCategory(category) {
+      alert(`Selected category: ${category}`);
+    },
+    escapeHTML(s) {
+      return String(s).replace(/[&<>"'`=\/]/g, (s) => {
+        return {
+          '&': '&amp;',
+          '<': '&lt;',
+          '>': '&gt;',
+          '"': '&quot;',
+          "'": '&#39;',
+          '/': '&#x2F;',
+          '`': '&#x60;',
+          '=': '&#x3D;'
+        }[s];
+      });
     }
   }
 }
 </script>
 
 <style scoped>
-/* Header Styles */
 header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 1rem;
-  background-color: var(--background-color);
 }
-
 .site-title {
-  font-family: 'Georgia', 'Times New Roman', serif;
-  font-size: 2.5rem;
-  color: var(--primary-color);
+  color: #004d99;
 }
-
-nav ul {
+.nav-list {
+  display: flex;
   list-style: none;
-  padding: 0;
-  display: flex;
-  gap: 15px;
 }
-
-nav ul li {
-  display: flex;
-  align-items: center;
+.nav-list li {
+  margin-left: 1rem;
 }
-
-nav ul li button {
-  background-color: var(--secondary-color);
-  border: none;
-  color: white;
-  padding: 0.5rem 1rem;
-  font-size: 1rem;
-  border-radius: 4px;
-  cursor: pointer;
+.nav-list .btn {
+  margin: 0;
 }
-
-nav ul li button:hover {
-  background-color: var(--primary-color);
-}
-
-.username {
-  margin-right: 1rem;
-}
-
-/* Intro Section Styles */
 .intro {
-  margin: 3rem auto;
-  text-align: center;
+  margin-top: 2rem;
 }
-
 .links {
-  margin-top: 2rem;
+  display: flex;
+  justify-content: space-around;
 }
-
 .link-item {
-  display: inline-block;
-  margin: 0 1rem;
-  padding: 0.5rem 1rem;
-  background-color: var(--background-color);
-  border-radius: 4px;
-  font-size: 1.25rem;
-  color: var(--text-color);
   text-decoration: none;
-  transition: background-color 0.3s;
+  color: #007bff;
 }
-
 .link-item:hover {
-  background-color: var(--secondary-color);
-  color: white;
+  text-decoration: underline;
 }
-
-/* Category Selection Styles */
 .navigation {
-  margin: 3rem auto;
-  text-align: center;
-}
-
-.navigation h3 {
-  font-family: 'Georgia', 'Times New Roman', serif;
-  font-size: 2rem;
-  color: var(--primary-color);
-}
-
-.nav-links {
-  display: inline-flex;
-  justify-content: center;
   margin-top: 2rem;
 }
-
+.nav-links {
+  display: flex;
+  justify-content: space-around;
+}
 .nav-item {
-  margin: 0 1rem;
-  padding: 1rem 2rem;
-  background-color: var(--background-color);
-  border-radius: 8px;
-  font-size: 1.5rem;
-  color: var(--text-color);
-  border: none;
-  cursor: pointer;
-  transition: background-color 0.3s;
-  font-family: 'Arial', 'Helvetica', sans-serif;
+  margin: 0.5rem;
 }
-
-.nav-item:hover {
-  background-color: var(--hover-background-color);
-}
-
-/* Modal Styles */
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.modal-content {
-  background: white;
-  padding: 2rem;
-  border-radius: 8px;
-  width: 80%;
-  max-width: 500px;
-  position: relative;
-}
-
-.close-button {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  font-size: 1.5rem;
-  cursor: pointer;
-}
-
-.rating-container {
-  display: flex;
-  justify-content: center;
-  gap: 0.5rem;
-}
-
 .rate-button {
-  display: block;
-  width: 200px;
-  margin: 3rem auto; /* Center horizontally and add margin */
-  padding: 1rem;
-  background-color: var(--secondary-color);
-  border: none;
-  color: white;
-  font-size: 1.5rem;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background-color 0.3s;
+  margin-top: 2rem;
 }
-
-.rate-button:hover {
-  background-color: var(--primary-color);
+.info-section {
+  margin-top: 2rem;
 }
-
-/* Admin Dashboard Styles */
 .admin-dashboard {
-  margin: 3rem auto;
-  padding: 2rem;
-  background-color: #f9f9f9;
-  border-radius: 8px;
-  max-width: 800px;
-}
-
-.admin-dashboard h3 {
-  font-size: 2rem;
-  color: var(--primary-color);
-}
-
-.stats, .submissions {
-  margin-bottom: 2rem;
-}
-
-.submissions ul {
-  list-style-type: none;
-  padding: 0;
-}
-
-.submissions li {
-  margin-bottom: 0.5rem;
+  margin-top: 2rem;
 }
 </style>
